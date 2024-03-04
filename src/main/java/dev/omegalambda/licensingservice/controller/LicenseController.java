@@ -6,6 +6,10 @@ import lombok.val;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
+import java.util.ArrayList;
+import java.util.List;
+import java.util.Locale;
+
 @RestController
 @RequestMapping(value = "v1/organization/{organizationId}/license")
 public class LicenseController {
@@ -36,9 +40,10 @@ public class LicenseController {
     @PostMapping()
     public ResponseEntity<String> createLicense(
             @PathVariable("organizationId") String organizationId,
-            @RequestBody License license
-    ) {
-        val responseMsg = licenseService.createLicense(license, organizationId);
+            @RequestBody License license,
+            @RequestHeader(value = "Accept-Language", required = false) Locale locale
+            ) {
+        val responseMsg = licenseService.createLicense(license, organizationId, locale);
         return ResponseEntity.ok(responseMsg);
     }
 
@@ -49,5 +54,13 @@ public class LicenseController {
     ) {
         val responseMsg = licenseService.deleteLicense(licenseId, organizationId);
         return ResponseEntity.ok(responseMsg);
+    }
+
+    public static void main(String[] args) {
+        dumb();
+    }
+    private static void dumb() {
+        val list = new ArrayList<>(List.of("bruno", "referrer", "oliveira"));
+        list.forEach(System.out::println);
     }
 }
