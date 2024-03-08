@@ -1,14 +1,27 @@
 package dev.omegalambda.licensingservice.controller;
 
-import dev.omegalambda.licensingservice.model.License;
-import dev.omegalambda.licensingservice.service.LicenseService;
-import lombok.val;
-import org.springframework.http.ResponseEntity;
-import org.springframework.web.bind.annotation.*;
+import static org.springframework.hateoas.server.mvc.WebMvcLinkBuilder.linkTo;
+import static org.springframework.hateoas.server.mvc.WebMvcLinkBuilder.methodOn;
 
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Locale;
+import java.util.Objects;
+
+import org.springframework.http.ResponseEntity;
+import org.springframework.web.bind.annotation.DeleteMapping;
+import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PathVariable;
+import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.PutMapping;
+import org.springframework.web.bind.annotation.RequestBody;
+import org.springframework.web.bind.annotation.RequestHeader;
+import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RestController;
+
+import dev.omegalambda.licensingservice.model.License;
+import dev.omegalambda.licensingservice.service.LicenseService;
+import lombok.val;
 
 @RestController
 @RequestMapping(value = "v1/organization/{organizationId}/license")
@@ -18,13 +31,21 @@ public class LicenseController {
     public LicenseController(LicenseService licenseService) {
         this.licenseService = licenseService;
     }
-
+    
+    @SuppressWarnings("null")
     @GetMapping("/{licenseId}")
     public ResponseEntity<License> getLicense(
             @PathVariable("licenseId") String licenseId,
             @PathVariable("organizationId") String organizationId
     ) {
-        val license = licenseService.getLicense(licenseId, organizationId);
+        final License license = licenseService.getLicense(licenseId, organizationId);
+
+        if (Objects.isNull(license)) {
+            return ResponseEntity.notFound().build();
+        }
+        
+        license.add(linkTo(methodOn(LicenseController.class).getLicense(organizationId, license.getLicenseId())).withSelfRel());
+
         return ResponseEntity.ok(license);
     }
 

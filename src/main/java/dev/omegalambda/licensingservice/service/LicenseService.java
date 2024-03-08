@@ -1,16 +1,15 @@
 package dev.omegalambda.licensingservice.service;
 
-import dev.omegalambda.licensingservice.model.License;
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.context.MessageSource;
-import org.springframework.stereotype.Service;
-
 import java.util.Locale;
 import java.util.Random;
 
+import org.springframework.context.MessageSource;
+import org.springframework.stereotype.Service;
+
+import dev.omegalambda.licensingservice.model.License;
+
 @Service
 public class LicenseService {
-
 
     private final MessageSource messageSource;
 
@@ -29,6 +28,7 @@ public class LicenseService {
                 .build();
     }
 
+    
     public String createLicense(License license, String organizationId, Locale locale) {
         if (license != null) {
             license.setOrganizationId(organizationId);

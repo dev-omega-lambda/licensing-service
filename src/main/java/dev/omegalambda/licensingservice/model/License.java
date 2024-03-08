@@ -1,11 +1,17 @@
 package dev.omegalambda.licensingservice.model;
 
-import lombok.Builder;
-import lombok.Data;
+import org.springframework.hateoas.RepresentationModel;
 
-@Data
+import lombok.Builder;
+import lombok.Getter;
+import lombok.Setter;
+import lombok.ToString;
+
+@Getter
+@Setter
+@ToString
 @Builder
-public class License {
+public class License extends RepresentationModel<License> {
     private Long id;
     private String licenseId;
     private String description;
