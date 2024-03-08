@@ -29,6 +29,8 @@ public class LicenseService {
     }
 
     
+
+    @SuppressWarnings("null")
     public String createLicense(License license, String organizationId, Locale locale) {
         if (license != null) {
             license.setOrganizationId(organizationId);
