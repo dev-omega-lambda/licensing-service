@@ -31,20 +31,26 @@ public class LicenseController {
     public LicenseController(LicenseService licenseService) {
         this.licenseService = licenseService;
     }
-    
+
     @SuppressWarnings("null")
     @GetMapping("/{licenseId}")
     public ResponseEntity<License> getLicense(
             @PathVariable("licenseId") String licenseId,
-            @PathVariable("organizationId") String organizationId
-    ) {
-        final License license = licenseService.getLicense(licenseId, organizationId);
+            @PathVariable("organizationId") String organizationId) {
+        val license = licenseService.getLicense(licenseId, organizationId);
 
         if (Objects.isNull(license)) {
             return ResponseEntity.notFound().build();
         }
-        
-        license.add(linkTo(methodOn(LicenseController.class).getLicense(organizationId, license.getLicenseId())).withSelfRel());
+
+        license.add(
+                linkTo(methodOn(LicenseController.class)
+                        .getLicense(organizationId, license.getLicenseId())).withSelfRel(),
+                linkTo(methodOn(LicenseController.class)
+                        .createLicense(organizationId, license, null)).withSelfRel(),
+                linkTo(methodOn(LicenseController.class)
+                        .updateLicense(organizationId, license)).withSelfRel(),
+                linkTo(methodOn(LicenseController.class).deleteLicense(licenseId, organizationId)).withSelfRel());
 
         return ResponseEntity.ok(license);
     }
@@ -52,8 +58,7 @@ public class LicenseController {
     @PutMapping()
     public ResponseEntity<String> updateLicense(
             @PathVariable("organizationId") String organizationId,
-            @RequestBody License license
-    ) {
+            @RequestBody License license) {
         val responseMsg = licenseService.updateLicense(license, organizationId);
         return ResponseEntity.ok(responseMsg);
     }
@@ -62,8 +67,7 @@ public class LicenseController {
     public ResponseEntity<String> createLicense(
             @PathVariable("organizationId") String organizationId,
             @RequestBody License license,
-            @RequestHeader(value = "Accept-Language", required = false) Locale locale
-            ) {
+            @RequestHeader(value = "Accept-Language", required = false) Locale locale) {
         val responseMsg = licenseService.createLicense(license, organizationId, locale);
         return ResponseEntity.ok(responseMsg);
     }
@@ -71,8 +75,7 @@ public class LicenseController {
     @DeleteMapping("/{licenseId}")
     public ResponseEntity<String> deleteLicense(
             @PathVariable("licenseId") String licenseId,
-            @PathVariable("organizationId") String organizationId
-    ) {
+            @PathVariable("organizationId") String organizationId) {
         val responseMsg = licenseService.deleteLicense(licenseId, organizationId);
         return ResponseEntity.ok(responseMsg);
     }
@@ -80,6 +83,7 @@ public class LicenseController {
     public static void main(String[] args) {
         dumb();
     }
+
     private static void dumb() {
         val list = new ArrayList<>(List.of("bruno", "referrer", "oliveira"));
         list.forEach(System.out::println);
