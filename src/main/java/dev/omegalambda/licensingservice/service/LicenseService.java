@@ -28,8 +28,6 @@ public class LicenseService {
                 .build();
     }
 
-    
-
     @SuppressWarnings("null")
     public String createLicense(License license, String organizationId, Locale locale) {
         if (license != null) {
